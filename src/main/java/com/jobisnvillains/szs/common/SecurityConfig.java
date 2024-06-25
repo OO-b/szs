@@ -5,19 +5,14 @@ import com.jobisnvillains.szs.util.JWTUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @RequiredArgsConstructor
-//@EnableWebSecurity
 public class SecurityConfig {
 
 //    private final AuthenticationConfiguration authenticationConfiguration;
@@ -48,7 +43,7 @@ public class SecurityConfig {
 
         //경로별 인가 작업
         http.authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/szs/signup", "/szs/login", "/szs/scrap", "/szs/refund").permitAll() // login, / /join 의 경로에서는 접근 허용
+                        .requestMatchers("/szs/signup", "/szs/login", "/szs/scrap", "/szs/refund", "/swagger-ui/**", "/v3/api-docs/**", "/3o3/**").permitAll() // login, / /join 의 경로에서는 접근 허용
                         .anyRequest().authenticated());
 
 //        http.authorizeRequests()
