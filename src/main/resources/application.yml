@@ -1,0 +1,29 @@
+spring:
+  h2:
+    console:
+      enabled: true
+  datasource:
+    url: jdbc:h2:mem:test
+    driver-class-name: org.h2.Driver
+    username: sa
+  jpa:
+    defer-datasource-initialization: true
+    show-sql: true
+    hibernate:
+      ddl-auto: create
+  output:
+    ansi:
+      enabled: always
+  jwt:
+    secret: QrDgivheiBAokY32EdpmqoleefAy3pQc1ff9sCxe
+  sql:
+    init:
+      mode: always
+
+Logging:
+  level:
+    root: info
+
+scrap:
+  url: https://codetest-v4.3o3.co.kr/scrap
+  x-api-key: fQL4PtoGRRgj6Q1OZG1WpQ==
