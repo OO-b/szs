@@ -1,6 +1,5 @@
 package com.jobisnvillains.szs.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jobisnvillains.szs.domain.*;
 import com.jobisnvillains.szs.dto.common.BaseResponseDto;
@@ -8,12 +7,9 @@ import com.jobisnvillains.szs.dto.common.TokenResponseDto;
 import com.jobisnvillains.szs.repository.AppointedMemberRepository;
 import com.jobisnvillains.szs.repository.MemberIncomeInfoRepository;
 import com.jobisnvillains.szs.repository.MemberRepository;
-//import com.jobisnvillains.szs.util.AESEncryptionUtil;
 import com.jobisnvillains.szs.repository.TaxStandardInfoRepository;
 import com.jobisnvillains.szs.util.JWTUtil;
 import io.jsonwebtoken.Jwts;
-import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -63,14 +59,11 @@ public class SzsService {
      * @param member {@link Member}
      * @return {@link BaseResponseDto}
      */
-    public BaseResponseDto signUp(Member member) {
-        List<AppointedMember> check = appointedMemberRepository.findAll();
+    public BaseResponseDto signUp(Member member) throws Exception {
 
-        prepareAppointedMembers();
-//
-//        // 1. 서비스 가입 가능한 회원 인지 확인
-//        boolean checkResult = checkAvailabilityForMember(member);
-//        if(!checkResult) return new BaseResponseDto("fail", "회원가입이 불가능합니다.");
+        // 1. 서비스 가입 가능한 회원 인지 확인
+        boolean checkResult = checkAvailabilityForMember(member);
+        if(!checkResult) return new BaseResponseDto("fail", "회원가입이 불가능합니다.");
 
         // 2. 회원 정보 저장
         memberRepository.save(member);
@@ -84,15 +77,16 @@ public class SzsService {
      * @param info {@link LoginInfo}
      * @return {@link Member}
      */
-    public TokenResponseDto login(LoginInfo info) throws Exception {
+    public String login(LoginInfo info) throws Exception {
 
         boolean checkResult = checkIfMemberExists(info.getUserId(), info.getPassword());
 
-        if(!checkResult) return new TokenResponseDto("fail", null);
+        if(!checkResult) return null;
 
         String userId = info.getUserId();
         String token = jwtUtil.createJwt(userId);
-        return new TokenResponseDto("Success", token);
+
+        return token;
 
     }
 
@@ -175,13 +169,7 @@ public class SzsService {
      * @param userId String
      * @return {@link Member}
      */
-    public int refund(String userId) throws Exception {
-
-        List<TaxStandardInfo> checkTest = taxStandardInfoRepository.findAll();
-
-        prepareTaxStandardInfo();
-
-        List<MemberIncomeInfo> all = memberIncomeInfoRepository.findAll();
+    public int refund(String userId) {
 
         Optional<MemberIncomeInfo> memberIncomeInfo = memberIncomeInfoRepository.findByUserId(userId);
         int income = memberIncomeInfo.get().getComprehensiveIncomeAmount(); // 종합소득금액
@@ -211,18 +199,6 @@ public class SzsService {
 
         return determinedTax;
 
-    }
-
-
-    /**
-     *  회원 가입 가능한 회원 테이블 구성
-     *
-     */
-    public void prepareAppointedMembers() {
-        List<AppointedMember> appointedMemberList = AppointedMember.of();
-        for(AppointedMember appointedMember : appointedMemberList) {
-            appointedMemberRepository.save(appointedMember);
-        }
     }
 
     /**
@@ -294,18 +270,5 @@ public class SzsService {
 
         return sumByYear;
     }
-
-    /**
-     *  세액 기준 테이블 구성
-     *
-     */
-    public void prepareTaxStandardInfo() {
-        List<TaxStandardInfo> appointedMemberList = TaxStandardInfo.of();
-        for(TaxStandardInfo appointedMember : appointedMemberList) {
-            taxStandardInfoRepository.save(appointedMember);
-        }
-    }
-
-
 
 }

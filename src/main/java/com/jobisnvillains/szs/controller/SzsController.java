@@ -29,7 +29,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-
 @Slf4j
 @Controller
 @RequestMapping("/szs")
@@ -102,7 +101,10 @@ public class SzsController {
 
         LoginInfo loginInfo = LoginInfo.of(userId, password);
 
-        return service.login(loginInfo);
+        String token = service.login(loginInfo);
+
+        new TokenResponseDto("fail", null);
+        return new TokenResponseDto("Success", token);
     }
 
 
@@ -116,11 +118,6 @@ public class SzsController {
     public BaseResponseDto scrap(HttpServletRequest request) throws Exception {
 
         String authorization = request.getHeader("Authorization");
-
-        if(authorization != null && !authorization.startsWith("Bearer ")){
-            System.out.println("실패");
-            throw new IllegalArgumentException();
-        }
 
         String token = authorization.split(" ")[1];
         String userId = jwtUtil.getUserId(token);
@@ -137,28 +134,26 @@ public class SzsController {
     @PostMapping(value="/refund")
     @ResponseBody
     @Operation(summary = "4. 결정세액 조회 API")
-    public Map<String,String> refund(HttpServletRequest request) throws Exception {
+    public Map<String,String> refund(HttpServletRequest request) {
 
         String authorization = request.getHeader("Authorization");
-
-        if(authorization != null && !authorization.startsWith("Bearer ")){
-            System.out.println("실패");
-            throw new IllegalArgumentException();
-        }
-
         String token = authorization.split(" ")[1];
         String userId = jwtUtil.getUserId(token);
 
         int determinedTax = service.refund(userId);
 
-        DecimalFormat formatter = new DecimalFormat("#,###");
-        String formattedTax = formatter.format(determinedTax);
+        String formatDeterminedTax = makePriceFormat(determinedTax);
 
         Map<String,String> response = new HashMap<>();
-        response.put("결정세액", formattedTax);
+        response.put("결정세액", formatDeterminedTax);
 
         return response;
 
+    }
+
+    private String makePriceFormat(int price) {
+//        DecimalFormat formatter = new DecimalFormat("#,###");
+        return new DecimalFormat("#,###").format(price);
     }
 
 

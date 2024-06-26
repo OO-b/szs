@@ -1,8 +1,7 @@
 package com.jobisnvillains.szs.util;
 
-import com.jobisnvillains.szs.dto.UserLoginRequestDto;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -11,6 +10,7 @@ import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
+@Slf4j
 @Component
 public class JWTUtil {
 
@@ -48,6 +48,33 @@ public class JWTUtil {
     }
 
 
+    /**
+     * JWT 검증
+     * @param token
+     * @return IsValidate
+     */
+    public boolean validateToken(String token) {
+        try {
+            Jwts.parser().verifyWith(secretKey).build().parseClaimsJws(token);
+            return true;
+        } catch (Exception e) {
+            log.info("Invalid JWT Token", e);
+        }
+        return false;
+    }
 
+
+    /**
+     * JWT Claims 추출
+     * @param accessToken
+     * @return JWT Claims
+     */
+    public Claims parseClaims(String accessToken) {
+        try {
+            return Jwts.parser().verifyWith(secretKey).build().parseClaimsJws(accessToken).getBody();
+        } catch (ExpiredJwtException e) {
+            return e.getClaims();
+        }
+    }
 
 }

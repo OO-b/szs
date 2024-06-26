@@ -24,12 +24,13 @@ public class SwaggerConfig {
 
         return new OpenAPI()
                 .components(new Components().addSecuritySchemes("Bearer Token", apiKey))
-                .addSecurityItem(securityRequirement);
+                .addSecurityItem(securityRequirement)
+                .info(apiInfo());
     }
     private Info apiInfo() {
         return new Info()
-                .title("SZS API") // API의 제목
-                .description("삼쩜삼 엔지니어 채용 과제") // API에 대한 설명
-                .version("1.0.0"); // API의 버전
+                .title("SZS API")
+                .description("삼쩜삼 엔지니어 채용 과제")
+                .version("1.0.0");
     }
 }
