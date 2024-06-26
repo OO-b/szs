@@ -1,5 +1,7 @@
 package com.jobisnvillains.szs.util;
 
+import com.jobisnvillains.szs.domain.Member;
+import com.jobisnvillains.szs.service.JwtService;
 import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,27 +11,23 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.Optional;
 
 @Slf4j
 @Component
 public class JWTUtil {
 
     private SecretKey secretKey;
+    private final JwtService jwtService;
 
-    public JWTUtil(@Value("${spring.jwt.secret}") String secret) {
+    public JWTUtil(@Value("${spring.jwt.secret}") String secret, JwtService jwtService) {
         secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), Jwts.SIG.HS256.key().build().getAlgorithm());
+        this.jwtService = jwtService;
     }
 
     public String getUserId(String token) {
-
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("userId", String.class);
     }
-
-    public Boolean isExpired(String token) {
-
-        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().getExpiration().before(new Date());
-    }
-
 
     /**
      *  토큰 생성
@@ -47,7 +45,6 @@ public class JWTUtil {
                 .compact();
     }
 
-
     /**
      * JWT 검증
      * @param token
@@ -56,25 +53,13 @@ public class JWTUtil {
     public boolean validateToken(String token) {
         try {
             Jwts.parser().verifyWith(secretKey).build().parseClaimsJws(token);
-            return true;
+            String userId = getUserId(token);
+            Optional<Member> member = jwtService.loadUserByUsername(userId.toString());
+            return member.isPresent();
         } catch (Exception e) {
             log.info("Invalid JWT Token", e);
         }
         return false;
-    }
-
-
-    /**
-     * JWT Claims 추출
-     * @param accessToken
-     * @return JWT Claims
-     */
-    public Claims parseClaims(String accessToken) {
-        try {
-            return Jwts.parser().verifyWith(secretKey).build().parseClaimsJws(accessToken).getBody();
-        } catch (ExpiredJwtException e) {
-            return e.getClaims();
-        }
     }
 
 }

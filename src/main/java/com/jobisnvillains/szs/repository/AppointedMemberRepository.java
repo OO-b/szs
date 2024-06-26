@@ -7,5 +7,4 @@ import java.util.Optional;
 
 public interface AppointedMemberRepository extends JpaRepository<AppointedMember, String> {
     Optional<AppointedMember> findByName(String name);
-    Optional<AppointedMember> findByNameAndRegNo(String name, String reqNo);
 }

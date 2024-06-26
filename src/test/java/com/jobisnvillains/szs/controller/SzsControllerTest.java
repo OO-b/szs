@@ -204,8 +204,7 @@ class SzsControllerTest {
      */
     @Test
     void giveUserToken_whenUserDeterminedTax_thenSuccess() throws Exception {
-
-
+        
         // 회원가입 초기데이터 입력
         Member insertMember = memberInitialDataInsert();
 
@@ -232,10 +231,7 @@ class SzsControllerTest {
         JSONObject jsonObject = new JSONObject(determinedTaxStr);
         Assertions.assertThat(jsonObject.get("결정세액")).isNotNull();
 
-
     }
-
-
 
     /**
      * Object to Json
@@ -244,8 +240,13 @@ class SzsControllerTest {
         return objectMapper.writeValueAsString(data);
     }
 
+
+    /**
+     * 회원가입 초기데이터 입력
+     *
+     * return
+     */
     private Member memberInitialDataInsert() {
-        // 회원가입 초기데이터 입력
         Member insertMember = new Member();
         insertMember.setUserId("tak");
         insertMember.setPassword(encoder.encode("123456"));

@@ -9,8 +9,6 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class MemberIncomeInquireCondition {
-
     private String name;
     private String regNo;
-
 }

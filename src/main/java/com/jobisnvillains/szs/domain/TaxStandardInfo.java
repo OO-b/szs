@@ -40,7 +40,7 @@ public class TaxStandardInfo {
         taxStandardInfoList.add(new TaxStandardInfo(150000000, 300000000, 3706000, 38));
         taxStandardInfoList.add(new TaxStandardInfo(300000000, 500000000, 9406000, 40));
         taxStandardInfoList.add(new TaxStandardInfo(500000000, 1000000000, 1740600, 42));
-        taxStandardInfoList.add(new TaxStandardInfo(1000000000, 999999999, 3840600, 45));
+        taxStandardInfoList.add(new TaxStandardInfo(1000000000, 2147483647, 3840600, 45));
 
         return taxStandardInfoList;
     }

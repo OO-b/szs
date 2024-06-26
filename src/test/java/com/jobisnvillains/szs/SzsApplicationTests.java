@@ -2,14 +2,11 @@ package com.jobisnvillains.szs;
 
 import com.jobisnvillains.szs.domain.Member;
 import com.jobisnvillains.szs.repository.MemberRepository;
-import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.util.logging.Logger;
 
 @Slf4j
 @SpringBootTest

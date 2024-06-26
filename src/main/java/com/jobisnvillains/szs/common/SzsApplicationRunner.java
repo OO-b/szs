@@ -23,9 +23,14 @@ public class SzsApplicationRunner implements ApplicationRunner {
         this.taxStandardInfoRepository = taxStandardInfoRepository;
     }
 
+    /**
+     *  Spring Boot 구동시 초기 DB 데이터 입력
+     *
+     * @param args ApplicationArguments
+     */
     @Override
-    public void run(ApplicationArguments args) throws Exception {
-        System.out.println("Initial Setting");
+    public void run(ApplicationArguments args){
+        log.info("Initial Setting");
         prepareAppointedMembers();
         prepareTaxStandardInfo();
     }
@@ -52,5 +57,4 @@ public class SzsApplicationRunner implements ApplicationRunner {
             taxStandardInfoRepository.save(appointedMember);
         }
     }
-
 }
